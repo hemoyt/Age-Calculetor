@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate your exact age with this user-friendly calculator">
+    <title>Age Calculator | Find Your Exact Age</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Age Calculator</h1>
+        <div class="input-box">
+            <label>When were you born? 🎂 (DD/MM/YYYY)</label>
+            <input type="text" id="birthDate" placeholder="DD/MM/YYYY" maxlength="10">
+        </div>
+        <button id="calculateBtn">Calculate My Age ⚡</button>
+        <div class="result" id="result"></div>
+        <div class="timer" id="timer">
+            <div class="timer-title">Time alive:</div>
+            <div class="timer-display">
+                <span id="years">00</span>y
+                <span id="months">00</span>m
+                <span id="days">00</span>d
+                <span id="hours">00</span>h
+                <span id="minutes">00</span>m
+                <span id="seconds">00</span>s
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

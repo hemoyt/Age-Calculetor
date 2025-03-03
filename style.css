@@ -1,0 +1,243 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2d3436;
+    font-size: 2.2rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.input-box {
+    margin-bottom: 2rem;
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: #2d3436;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input[type="date"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+/* Add these new styles for date input format */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+    text-transform: uppercase;
+}
+
+/* Force date format display */
+input[type="date"]::-webkit-datetime-edit-fields-wrapper { }
+input[type="date"]::-webkit-datetime-edit-day-field { order: 1; }
+input[type="date"]::-webkit-datetime-edit-month-field { order: 2; }
+input[type="date"]::-webkit-datetime-edit-year-field { order: 3; }
+
+input[type="text"] {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+input[type="text"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.result {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+.result.show {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(135deg, #e0ecfe 0%, #f3e7ff 100%);
+    border-left: 4px solid #667eea;
+}
+
+.result.error {
+    background: linear-gradient(135deg, #ffe0e0 0%, #fff0f0 100%);
+    border-left: 4px solid #ff4757;
+    color: #ff4757;
+}
+
+.timer {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.timer.show {
+    display: block;
+}
+
+.timer-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.timer-display {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+.timer-display span {
+    display: inline-block;
+    padding: 0.3rem 0.5rem;
+    margin: 0 0.2rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    min-width: 2.5em;
+}
+
+@keyframes pulse-light {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+.timer-display span:last-child {
+    animation: pulse-light 1s infinite;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+}
