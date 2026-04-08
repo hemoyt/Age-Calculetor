@@ -1,3 +1,18 @@
+:root {
+    --bg: #f4f7ff;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --primary: #4f46e5;
+    --primary-strong: #4338ca;
+    --border: #e5e7eb;
+    --success-bg: #ecfdf5;
+    --success-border: #10b981;
+    --error-bg: #fef2f2;
+    --error-border: #ef4444;
+    --shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,237 +22,205 @@
 
 body {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at top, #eef2ff 0%, var(--bg) 50%, #eef2ff 100%);
+    color: var(--text);
+    padding: 1rem;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 2.5rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 450px;
-    transform: translateY(20px);
-    animation: fadeIn 0.5s ease-out forwards;
+    width: min(760px, 100%);
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.header {
+    margin-bottom: 1rem;
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #2d3436;
-    font-size: 2.2rem;
-    position: relative;
-    padding-bottom: 10px;
+    font-size: clamp(1.6rem, 2.2vw, 2rem);
+    line-height: 1.2;
 }
 
-h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    border-radius: 2px;
+.subtitle {
+    color: var(--muted);
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
 }
 
-.input-box {
-    margin-bottom: 2rem;
-    animation: slideUp 0.5s ease-out forwards;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.card {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fcfcff;
 }
 
 label {
     display: block;
-    margin-bottom: 0.8rem;
-    color: #2d3436;
-    font-weight: 500;
-    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
-
-input[type="date"] {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-input[type="date"]:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    outline: none;
-}
-
-/* Add these new styles for date input format */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    background: transparent;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-input[type="date"]::-webkit-datetime-edit {
-    text-transform: uppercase;
-}
-
-/* Force date format display */
-input[type="date"]::-webkit-datetime-edit-fields-wrapper { }
-input[type="date"]::-webkit-datetime-edit-day-field { order: 1; }
-input[type="date"]::-webkit-datetime-edit-month-field { order: 2; }
-input[type="date"]::-webkit-datetime-edit-year-field { order: 3; }
 
 input[type="text"] {
     width: 100%;
-    padding: 1rem;
-    border: 2px solid #ddd;
+    border: 1px solid #c7d2fe;
     border-radius: 10px;
+    padding: 0.9rem;
     font-size: 1rem;
-    transition: all 0.3s ease;
-    text-align: center;
-    letter-spacing: 1px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input[type="text"]:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.45rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1rem;
 }
 
 button {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 500;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: pulse 2s infinite;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: transform 0.12s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.02);
-    }
-    100% {
-        transform: scale(1);
-    }
+button:active {
+    transform: translateY(1px);
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+#calculateBtn {
+    background: var(--primary);
+    color: #fff;
+    flex: 1;
+}
+
+#calculateBtn:hover {
+    background: var(--primary-strong);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
 .result {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 1.1rem;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.5s ease;
+    margin-top: 1rem;
+    border-radius: 12px;
+    padding: 0.95rem 1rem;
+    border-left: 4px solid transparent;
+    display: none;
 }
 
 .result.show {
-    opacity: 1;
-    transform: translateY(0);
-    background: linear-gradient(135deg, #e0ecfe 0%, #f3e7ff 100%);
-    border-left: 4px solid #667eea;
+    display: block;
+    background: var(--success-bg);
+    border-left-color: var(--success-border);
 }
 
 .result.error {
-    background: linear-gradient(135deg, #ffe0e0 0%, #fff0f0 100%);
-    border-left: 4px solid #ff4757;
-    color: #ff4757;
+    display: block;
+    background: var(--error-bg);
+    border-left-color: var(--error-border);
+    color: #991b1b;
+}
+
+.stats {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.65rem;
+}
+
+.stat-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 0.75rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 0.15rem;
+}
+
+.stat-wide {
+    grid-column: 1 / -1;
 }
 
 .timer {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff;
     padding: 1rem;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-align: center;
-    display: none;
-    animation: fadeIn 0.5s ease-out;
-}
-
-.timer.show {
-    display: block;
 }
 
 .timer-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.95;
     margin-bottom: 0.5rem;
-    opacity: 0.9;
 }
 
 .timer-display {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    font-family: monospace;
-    letter-spacing: 1px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .timer-display span {
     display: inline-block;
-    padding: 0.3rem 0.5rem;
-    margin: 0 0.2rem;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    min-width: 2.5em;
+    min-width: 2.2em;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    padding: 0.25rem 0.4rem;
+    margin: 0 0.1rem;
 }
 
-@keyframes pulse-light {
-    0% { opacity: 1; }
-    50% { opacity: 0.8; }
-    100% { opacity: 1; }
-}
-
-.timer-display span:last-child {
-    animation: pulse-light 1s infinite;
-}
-
-@media (max-width: 480px) {
+@media (max-width: 640px) {
     .container {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
-    h1 {
-        font-size: 1.8rem;
+    .actions {
+        flex-direction: column;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -1,108 +1,156 @@
-document.getElementById('calculateBtn').addEventListener('click', handleCalculation);
-
-function handleCalculation() {
-    const button = document.getElementById('calculateBtn');
-    const originalText = button.textContent;
-    
-    // Show loading state
-    button.textContent = 'Calculating...';
-    button.disabled = true;
-    
-    // Simulate loading for smooth animation
-    setTimeout(() => {
-        calculateAge();
-        button.textContent = originalText;
-        button.disabled = false;
-    }, 800);
-}
+const birthDateInput = document.getElementById('birthDate');
+const calculateBtn = document.getElementById('calculateBtn');
+const clearBtn = document.getElementById('clearBtn');
+const resultEl = document.getElementById('result');
+const statsEl = document.getElementById('stats');
+const timerEl = document.getElementById('timer');
 
 let timerInterval;
+let currentBirthDate = null;
 
-function calculateAge() {
-    const birthDateStr = document.getElementById('birthDate').value;
-    
-    // Check if the date format is correct (DD/MM/YYYY)
-    if (!isValidDateFormat(birthDateStr)) {
-        showResult('👉 Please enter date in DD/MM/YYYY format', false);
+calculateBtn.addEventListener('click', handleCalculation);
+clearBtn.addEventListener('click', clearAll);
+birthDateInput.addEventListener('input', formatDateInput);
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
         stopTimer();
-        return;
+    } else if (currentBirthDate) {
+        startTimer(currentBirthDate);
     }
+});
 
-    // Convert DD/MM/YYYY to YYYY-MM-DD for Date object
-    const [day, month, year] = birthDateStr.split('/');
-    const birthDate = new Date(year, month - 1, day);
-    const today = new Date();
-    
-    if (isNaN(birthDate)) {
-        showResult('👉 Please enter a valid date', false);
-        stopTimer();
-        return;
-    }
+function handleCalculation() {
+    const originalText = calculateBtn.textContent;
+    calculateBtn.textContent = 'Calculating...';
+    calculateBtn.disabled = true;
 
-    if (birthDate > today) {
-        showResult('🤔 Birth date cannot be in the future', false);
-        stopTimer();
-        return;
-    }
+    setTimeout(() => {
+        const birthDate = parseBirthDate(birthDateInput.value);
+        if (!birthDate) {
+            showResult('Please enter a valid date in DD/MM/YYYY format.', false);
+            hideDetails();
+            calculateBtn.textContent = originalText;
+            calculateBtn.disabled = false;
+            return;
+        }
 
-    let years = today.getFullYear() - birthDate.getFullYear();
-    let months = today.getMonth() - birthDate.getMonth();
-    let days = today.getDate() - birthDate.getDate();
+        const now = new Date();
+        if (birthDate > now) {
+            showResult('Birth date cannot be in the future.', false);
+            hideDetails();
+            calculateBtn.textContent = originalText;
+            calculateBtn.disabled = false;
+            return;
+        }
 
-    if (months < 0 || (months === 0 && days < 0)) {
-        years--;
-        months = months + 12;
-    }
+        currentBirthDate = birthDate;
+        const age = getAgeBreakdown(birthDate, now);
 
-    if (days < 0) {
-        const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, birthDate.getDate());
-        days = Math.floor((today - lastMonth) / (1000 * 60 * 60 * 24));
-    }
+        updateStats(age, birthDate, now);
+        showResult(`You are <strong>${age.years}</strong> years, <strong>${age.months}</strong> months, and <strong>${age.days}</strong> days old.`, true);
+        startTimer(birthDate);
 
-    const message = `
-        🎉 Your age is:
-        <span style="display: block; font-size: 1.2em; margin: 10px 0; font-weight: bold;">
-            ${days} days/${months} months/${years} years
-        </span>
-        ✨ That's ${Math.floor(years * 365 + months * 30.44 + days)} total days!
-    `;
-
-    startTimer(birthDate);
-    showResult(message, true);
+        calculateBtn.textContent = originalText;
+        calculateBtn.disabled = false;
+    }, 280);
 }
 
-// Add this new function to validate date format
-function isValidDateFormat(dateStr) {
-    // Check if format matches DD/MM/YYYY
-    const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-    if (!regex.test(dateStr)) return false;
+function parseBirthDate(dateStr) {
+    const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/;
+    const match = dateStr.match(regex);
+    if (!match) return null;
 
-    // Check if it's a valid date
-    const [day, month, year] = dateStr.split('/');
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+
     const date = new Date(year, month - 1, day);
-    return date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year;
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
+
+function getAgeBreakdown(fromDate, toDate) {
+    let years = toDate.getFullYear() - fromDate.getFullYear();
+    let months = toDate.getMonth() - fromDate.getMonth();
+    let days = toDate.getDate() - fromDate.getDate();
+
+    if (days < 0) {
+        months -= 1;
+        const previousMonthDays = new Date(toDate.getFullYear(), toDate.getMonth(), 0).getDate();
+        days += previousMonthDays;
+    }
+
+    if (months < 0) {
+        years -= 1;
+        months += 12;
+    }
+
+    return { years, months, days };
+}
+
+function updateStats(age, birthDate, now) {
+    const msDiff = now - birthDate;
+    const totalDays = Math.floor(msDiff / (24 * 60 * 60 * 1000));
+
+    document.getElementById('statYears').textContent = String(age.years);
+    document.getElementById('statMonths').textContent = String(age.months);
+    document.getElementById('statDays').textContent = String(age.days);
+    document.getElementById('statTotalDays').textContent = totalDays.toLocaleString();
+    document.getElementById('nextBirthday').textContent = getNextBirthdayText(birthDate, now);
+
+    statsEl.hidden = false;
+}
+
+function getNextBirthdayText(birthDate, now) {
+    const thisYear = now.getFullYear();
+    let nextBirthday = new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
+
+    if (nextBirthday < now) {
+        nextBirthday = new Date(thisYear + 1, birthDate.getMonth(), birthDate.getDate());
+    }
+
+    const diffMs = nextBirthday - now;
+    const diffDays = Math.ceil(diffMs / (24 * 60 * 60 * 1000));
+
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+
+    return `${formatter.format(nextBirthday)} (${diffDays} day${diffDays === 1 ? '' : 's'} left)`;
 }
 
 function startTimer(birthDate) {
     stopTimer();
-    
-    const timerElement = document.querySelector('.timer');
-    timerElement.classList.add('show');
-    
+    timerEl.hidden = false;
+
     timerInterval = setInterval(() => {
         const now = new Date();
-        const diff = now - birthDate;
-        
-        const years = Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
-        const remainingMs = diff % (365.25 * 24 * 60 * 60 * 1000);
-        
-        const months = Math.floor(remainingMs / (30.44 * 24 * 60 * 60 * 1000));
-        const remainingAfterMonths = remainingMs % (30.44 * 24 * 60 * 60 * 1000);
-        
-        const days = Math.floor(remainingAfterMonths / (24 * 60 * 60 * 1000));
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
+        const elapsed = now - birthDate;
+
+        const totalSeconds = Math.floor(elapsed / 1000);
+        const seconds = totalSeconds % 60;
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const minutes = totalMinutes % 60;
+        const totalHours = Math.floor(totalMinutes / 60);
+        const hours = totalHours % 24;
+        const totalDays = Math.floor(totalHours / 24);
+
+        const years = Math.floor(totalDays / 365.25);
+        const remainingDaysAfterYears = Math.floor(totalDays - years * 365.25);
+        const months = Math.floor(remainingDaysAfterYears / 30.44);
+        const days = Math.floor(remainingDaysAfterYears - months * 30.44);
 
         document.getElementById('years').textContent = padNumber(years);
         document.getElementById('months').textContent = padNumber(months);
@@ -116,60 +164,42 @@ function startTimer(birthDate) {
 function stopTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
-        document.querySelector('.timer').classList.remove('show');
+        timerInterval = null;
     }
+    timerEl.hidden = true;
+}
+
+function hideDetails() {
+    statsEl.hidden = true;
+    stopTimer();
+}
+
+function showResult(message, success) {
+    resultEl.className = success ? 'result show' : 'result error';
+    resultEl.innerHTML = message;
+}
+
+function clearAll() {
+    birthDateInput.value = '';
+    currentBirthDate = null;
+    resultEl.className = 'result';
+    resultEl.textContent = '';
+    hideDetails();
+    birthDateInput.focus();
 }
 
 function padNumber(num) {
-    return num.toString().padStart(2, '0');
+    return String(num).padStart(2, '0');
 }
 
-// Clean up timer when page is hidden
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        stopTimer();
-    } else {
-        const birthDate = new Date(document.getElementById('birthDate').value);
-        if (!isNaN(birthDate) && birthDate < new Date()) {
-            startTimer(birthDate);
-        }
-    }
-});
+function formatDateInput(event) {
+    let value = event.target.value.replace(/\D/g, '').slice(0, 8);
 
-function showResult(message, isSuccess) {
-    const result = document.getElementById('result');
-    result.innerHTML = message;
-    
-    // Remove existing classes
-    result.className = 'result';
-    
-    // Force a reflow
-    void result.offsetWidth;
-    
-    // Add appropriate classes
-    result.className = 'result ' + (isSuccess ? 'show' : 'show error');
+    if (value.length > 4) {
+        value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+    } else if (value.length > 2) {
+        value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    }
+
+    event.target.value = value;
 }
-
-// Add input animation
-document.getElementById('birthDate').addEventListener('focus', function() {
-    this.parentElement.classList.add('active');
-});
-
-document.getElementById('birthDate').addEventListener('blur', function() {
-    this.parentElement.classList.remove('active');
-});
-
-// Add input formatting helper
-document.getElementById('birthDate').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 0) {
-        if (value.length <= 2) {
-            value = value;
-        } else if (value.length <= 4) {
-            value = value.slice(0, 2) + '/' + value.slice(2);
-        } else {
-            value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4, 8);
-        }
-    }
-    e.target.value = value;
-});

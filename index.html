@@ -3,22 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate your exact age with this user-friendly calculator">
-    <title>Age Calculator | Find Your Exact Age</title>
+    <meta name="description" content="Clean and useful age calculator with detailed age breakdown and live timer">
+    <title>Age Calculator | Clean & Useful</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>✨ Age Calculator</h1>
-        <div class="input-box">
-            <label>When were you born? 🎂 (DD/MM/YYYY)</label>
-            <input type="text" id="birthDate" placeholder="DD/MM/YYYY" maxlength="10">
-        </div>
-        <button id="calculateBtn">Calculate My Age ⚡</button>
-        <div class="result" id="result"></div>
-        <div class="timer" id="timer">
-            <div class="timer-title">Time alive:</div>
+    <main class="container" aria-labelledby="title">
+        <header class="header">
+            <h1 id="title">Age Calculator</h1>
+            <p class="subtitle">Get your exact age, total days alive, and a live timer.</p>
+        </header>
+
+        <section class="card" aria-label="Age input section">
+            <label for="birthDate">Date of birth (DD/MM/YYYY)</label>
+            <input type="text" id="birthDate" placeholder="DD/MM/YYYY" maxlength="10" inputmode="numeric" autocomplete="bday">
+            <p class="hint">Example: 08/04/2000</p>
+
+            <div class="actions">
+                <button id="calculateBtn" type="button">Calculate age</button>
+                <button id="clearBtn" class="btn-secondary" type="button">Clear</button>
+            </div>
+        </section>
+
+        <section class="result" id="result" aria-live="polite"></section>
+
+        <section class="stats" id="stats" aria-label="Age breakdown" hidden>
+            <article class="stat-card">
+                <div class="stat-label">Years</div>
+                <div class="stat-value" id="statYears">0</div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Months</div>
+                <div class="stat-value" id="statMonths">0</div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Days</div>
+                <div class="stat-value" id="statDays">0</div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Total days</div>
+                <div class="stat-value" id="statTotalDays">0</div>
+            </article>
+            <article class="stat-card stat-wide">
+                <div class="stat-label">Next birthday</div>
+                <div class="stat-value" id="nextBirthday">-</div>
+            </article>
+        </section>
+
+        <section class="timer" id="timer" hidden>
+            <div class="timer-title">Live time elapsed</div>
             <div class="timer-display">
                 <span id="years">00</span>y
                 <span id="months">00</span>m
@@ -27,8 +61,9 @@
                 <span id="minutes">00</span>m
                 <span id="seconds">00</span>s
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
